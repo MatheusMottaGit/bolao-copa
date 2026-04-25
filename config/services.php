@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'football_api' => [
+        'key' => env('FOOTBALL_API_KEY'),
+        'url' => env('FOOTBALL_API_URL', 'https://api.football-data.org/v4'),
+    ],
+
 ];
