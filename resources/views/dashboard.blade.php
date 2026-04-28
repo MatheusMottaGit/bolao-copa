@@ -1,18 +1,22 @@
-<x-layouts::app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+<x-layouts::app :title="__('Início')">
+    <div class="flex flex-col gap-6 max-w-2xl mx-auto">
+        <flux:heading size="xl">Bem-vindo, {{ auth()->user()->username }}!</flux:heading>
+
+        <flux:card>
+            <flux:heading size="lg">Bolão da Copa</flux:heading>
+            <flux:text class="mt-2">Faça palpites nos jogos da Copa do Mundo e dispute com seus amigos!</flux:text>
+            <div class="mt-4">
+                <flux:link :href="route('groups.index')" variant="primary">Ver meus bolões</flux:link>
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-            </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-            </div>
-        </div>
-        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-            <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-        </div>
+        </flux:card>
+
+        @if (auth()->user()->is_admin)
+            <flux:card>
+                <flux:heading size="lg">Administração</flux:heading>
+                <div class="mt-3">
+                    <flux:link :href="route('admin.groups.index')" variant="outline">Painel Admin</flux:link>
+                </div>
+            </flux:card>
+        @endif
     </div>
 </x-layouts::app>

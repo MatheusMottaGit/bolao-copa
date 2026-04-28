@@ -37,12 +37,14 @@ class SyncGames extends Command
             $game = Game::updateOrCreate(
                 ['api_id' => $apiId],
                 [
-                    'home_team' => $match['homeTeam']['name'],
-                    'away_team' => $match['awayTeam']['name'],
-                    'starts_at' => $match['utcDate'],
+                    'home_team'  => $match['homeTeam']['name'],
+                    'home_crest' => $match['homeTeam']['crest'] ?? null,
+                    'away_team'  => $match['awayTeam']['name'],
+                    'away_crest' => $match['awayTeam']['crest'] ?? null,
+                    'starts_at'  => $match['utcDate'],
                     'home_score' => $homeScore,
                     'away_score' => $awayScore,
-                    'status' => $status,
+                    'status'     => $status,
                 ]
             );
 

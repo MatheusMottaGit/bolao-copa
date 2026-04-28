@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::redirect('dashboard', '/groups')->name('dashboard');
 
     // Grupos / bolões
     Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
