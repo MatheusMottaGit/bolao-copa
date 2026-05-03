@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\GroupController as AdminGroupController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PredictionController;
 use App\Http\Controllers\RankingController;
@@ -13,7 +12,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Grupos / bolões
     Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
-    Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
+    Route::post('/groups', [GroupController::class, 'store'])->middleware('is_admin')->name('groups.store');
     Route::post('/groups/join', [GroupController::class, 'join'])->name('groups.join');
     Route::get('/groups/{group}', [GroupController::class, 'show'])->name('groups.show');
 
@@ -23,15 +22,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Ranking
     Route::get('/groups/{group}/ranking', [RankingController::class, 'show'])->name('ranking.show');
-});
-
-// Admin
-Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/groups', [AdminGroupController::class, 'index'])->name('groups.index');
-    Route::get('/groups/create', [AdminGroupController::class, 'create'])->name('groups.create');
-    Route::post('/groups', [AdminGroupController::class, 'store'])->name('groups.store');
-    Route::get('/groups/{group}', [AdminGroupController::class, 'show'])->name('groups.show');
-    Route::delete('/groups/{group}', [AdminGroupController::class, 'destroy'])->name('groups.destroy');
 });
 
 require __DIR__.'/settings.php';

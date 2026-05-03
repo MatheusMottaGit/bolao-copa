@@ -33,14 +33,21 @@ class GroupController extends Controller
         return redirect()->route('groups.show', $group)->with('success', 'Bolão criado com sucesso!');
     }
 
-    public function show(Group $group): View
+    public function show(Request $request, Group $group): View
     {
         abort_unless(
             $group->users()->where('user_id', Auth::id())->exists(),
             403
         );
 
-        $games = \App\Models\Game::orderBy('starts_at')->get();
+        $search = $request->string('search')->trim()->value();
+        $games = \App\Models\Game::orderBy('starts_at')
+            ->when($search, fn ($q) => $q->where(fn ($q) =>
+                $q->where('home_team', 'like', "%{$search}%")
+                  ->orWhere('away_team', 'like', "%{$search}%")
+            ))
+            ->get()
+            ->groupBy(fn ($game) => $game->starts_at->format('Y-m-d'));
         $userPredictions = Auth::user()
             ->predictions()
             ->where('group_id', $group->id)
@@ -49,7 +56,7 @@ class GroupController extends Controller
 
         $ranking = $this->buildRanking($group);
 
-        return view('groups.show', compact('group', 'games', 'userPredictions', 'ranking'));
+        return view('groups.show', compact('group', 'games', 'userPredictions', 'ranking', 'search'));
     }
 
     public function join(Request $request): RedirectResponse

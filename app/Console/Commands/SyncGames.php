@@ -29,6 +29,10 @@ class SyncGames extends Command
         $matches = $response->json('matches', []);
 
         foreach ($matches as $match) {
+            if (blank($match['homeTeam']['name']) || blank($match['awayTeam']['name'])) {
+                continue;
+            }
+
             $apiId = $match['id'];
             $status = $this->mapStatus($match['status']);
             $homeScore = $match['score']['fullTime']['home'] ?? null;
