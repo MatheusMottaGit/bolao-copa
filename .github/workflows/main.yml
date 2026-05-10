@@ -1,4 +1,4 @@
-name: Deploy bot
+name: Deploy bolao
 
 on:
   push:
