@@ -1,0 +1,15 @@
+.git
+.gitignore
+node_modules
+public/build
+public/hot
+.env
+.env.*
+tests
+phpunit.xml
+pint.json
+.editorconfig
+.phpunit.cache
+.phpactor.json
+README.md
+CLAUDE.md

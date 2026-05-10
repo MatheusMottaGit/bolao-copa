@@ -1,0 +1,59 @@
+services:
+  app:
+    build: .
+    container_name: bolao_app
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "80:80"
+    volumes:
+      - ./public:/var/www/html/public
+      - ./storage:/var/www/html/storage
+    depends_on:
+      - db
+    networks:
+      - bolao_net
+
+  scheduler:
+    build: .
+    container_name: bolao_scheduler
+    restart: unless-stopped
+    env_file: .env
+    command: ["php", "artisan", "schedule:work"]
+    volumes:
+      - ./storage:/var/www/html/storage
+    depends_on:
+      - db
+    networks:
+      - bolao_net
+
+  db:
+    image: mysql:8.0
+    container_name: bolao_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - bolao_net
+
+  node:
+    image: node:20-alpine
+    container_name: bolao_node_build
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm ci && npm run build"
+    profiles:
+      - build
+
+networks:
+  bolao_net:
+    driver: bridge
+
+volumes:
+  db_data:
