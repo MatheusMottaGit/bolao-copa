@@ -1,13 +1,12 @@
 services:
   app:
-    build: .
+    image: ghcr.io/matheusmottagit/bolao-copa:latest
     container_name: bolao_app
     restart: unless-stopped
     env_file: .env
     ports:
       - "80:80"
     volumes:
-      - ./public:/var/www/html/public
       - ./storage:/var/www/html/storage
     depends_on:
       - db
@@ -15,7 +14,7 @@ services:
       - bolao_net
 
   scheduler:
-    build: .
+    image: ghcr.io/matheusmottagit/bolao-copa:latest
     container_name: bolao_scheduler
     restart: unless-stopped
     env_file: .env
@@ -40,16 +39,6 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - bolao_net
-
-  node:
-    image: node:20-alpine
-    container_name: bolao_node_build
-    working_dir: /app
-    volumes:
-      - .:/app
-    command: sh -c "npm ci && npm run build"
-    profiles:
-      - build
 
 networks:
   bolao_net:
