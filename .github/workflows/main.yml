@@ -80,7 +80,7 @@ jobs:
             cd /docker/bolao_copa
 
             cat > .env << EOF
-APP_NAME=Bolão Copa
+APP_NAME=Bolao Copa
 APP_ENV=production
 APP_DEBUG=false
 APP_KEY=${APP_KEY}
