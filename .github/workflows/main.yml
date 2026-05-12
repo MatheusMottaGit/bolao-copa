@@ -44,48 +44,65 @@ jobs:
           push: true
           tags: ${{ env.IMAGE }}:latest,${{ env.IMAGE }}:${{ github.sha }}
 
-      - name: Copy docker-compose.yml to VPS
-        uses: appleboy/scp-action@v0.1.7
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: docker-compose.yml
-          target: /docker/bolao_copa
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Add VPS to known hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copy docker-compose.yml to VPS
+        run: scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/docker/bolao_copa/docker-compose.yml
 
       - name: Deploy on VPS
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          APP_URL: ${{ secrets.APP_URL }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
+          FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
+          FOOTBALL_API_URL: ${{ secrets.FOOTBALL_API_URL }}
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            APP_KEY="$APP_KEY" \
+            APP_URL="$APP_URL" \
+            DB_DATABASE="$DB_DATABASE" \
+            DB_USERNAME="$DB_USERNAME" \
+            DB_PASSWORD="$DB_PASSWORD" \
+            DB_ROOT_PASSWORD="$DB_ROOT_PASSWORD" \
+            FOOTBALL_API_KEY="$FOOTBALL_API_KEY" \
+            FOOTBALL_API_URL="$FOOTBALL_API_URL" \
+            bash << 'ENDSSH'
             mkdir -p /docker/bolao_copa/storage
             cd /docker/bolao_copa
 
-            cat > .env << 'EOF'
-            APP_NAME=Bolão Copa
-            APP_ENV=production
-            APP_DEBUG=false
-            APP_KEY=${{ secrets.APP_KEY }}
-            APP_URL=${{ secrets.APP_URL }}
-            APP_LOCALE=pt_BR
-            APP_FALLBACK_LOCALE=pt_BR
-            DB_CONNECTION=mysql
-            DB_HOST=db
-            DB_PORT=3306
-            DB_DATABASE=${{ secrets.DB_DATABASE }}
-            DB_USERNAME=${{ secrets.DB_USERNAME }}
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
-            SESSION_DRIVER=database
-            CACHE_STORE=database
-            QUEUE_CONNECTION=database
-            LOG_CHANNEL=stack
-            LOG_LEVEL=error
-            FOOTBALL_API_KEY=${{ secrets.FOOTBALL_API_KEY }}
-            FOOTBALL_API_URL=${{ secrets.FOOTBALL_API_URL }}
-            EOF
+            cat > .env << EOF
+APP_NAME=Bolão Copa
+APP_ENV=production
+APP_DEBUG=false
+APP_KEY=${APP_KEY}
+APP_URL=${APP_URL}
+APP_LOCALE=pt_BR
+APP_FALLBACK_LOCALE=pt_BR
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=${DB_DATABASE}
+DB_USERNAME=${DB_USERNAME}
+DB_PASSWORD=${DB_PASSWORD}
+DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+SESSION_DRIVER=database
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+LOG_CHANNEL=stack
+LOG_LEVEL=error
+FOOTBALL_API_KEY=${FOOTBALL_API_KEY}
+FOOTBALL_API_URL=${FOOTBALL_API_URL}
+EOF
 
             docker compose pull
             docker compose up -d
+          ENDSSH
