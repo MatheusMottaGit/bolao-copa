@@ -10,10 +10,10 @@ until php -r "new PDO('mysql:host=${DB_HOST};port=${DB_PORT:-3306};dbname=${DB_D
     sleep 2
 done
 
-php artisan migrate --force
-
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+if [ "${SKIP_SETUP:-false}" = "false" ]; then
+    php artisan migrate --force
+    php artisan config:cache
+    php artisan route:cache
+fi
 
 exec "$@"
