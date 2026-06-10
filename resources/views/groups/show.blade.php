@@ -11,10 +11,12 @@
                     Meus Bolões
                 </a>
                 <flux:heading size="xl">{{ $group->name }}</flux:heading>
-                <div class="mt-2 flex items-center gap-2">
-                    <span class="text-base text-slate-500">Código:</span>
-                    <span class="rounded bg-[#C9920A]/10 px-2 py-0.5 font-mono text-sm font-bold text-[#C9920A]">{{ $group->code }}</span>
-                </div>
+                @if (auth()->user()->is_admin)
+                    <div class="mt-2 flex items-center gap-2">
+                        <span class="text-base text-slate-500">Código:</span>
+                        <span class="rounded bg-[#C9920A]/10 px-2 py-0.5 font-mono text-sm font-bold text-[#C9920A]">{{ $group->code }}</span>
+                    </div>
+                @endif
             </div>
             <div class="flex shrink-0 items-center gap-2 sm:mt-1">
                 <a href="{{ route('groups.participants', $group) }}"
@@ -90,8 +92,8 @@
                 <div class="mt-3 flex flex-col gap-4">
                 @foreach ($dayGames as $game)
                 @php
-                    $prediction = $userPredictions[$game->id] ?? null;
-                    $gamePredictions = $allPredictions[$game->id] ?? collect();
+                    $prediction = $userPredictions->get($game->id);
+                    $gamePredictions = $allPredictions->get($game->id, collect());
                 @endphp
                 <div class="rounded-xl border border-zinc-800 bg-slate-900 overflow-hidden">
 
@@ -218,8 +220,7 @@
                     @endif
 
                     {{-- Palpites dos participantes --}}
-                    @if ($gamePredictions->isNotEmpty())
-                        <details class="group/preds border-t border-zinc-800">
+                    <details class="group/preds border-t border-zinc-800">
                             <summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-2.5 select-none transition hover:bg-slate-800/40 sm:px-5">
                                 <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 transition-transform group-open/preds:rotate-90">
@@ -261,7 +262,6 @@
                                 @endforeach
                             </div>
                         </details>
-                    @endif
                 </div>
                 @endforeach
                 </div>
