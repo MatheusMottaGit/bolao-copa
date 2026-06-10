@@ -16,9 +16,9 @@
                 <flux:table.rows>
                     @foreach ($ranking as $i => $member)
                         <flux:table.row>
-                            <flux:cell class="font-bold text-lg">{{ $i + 1 }}</flux:table.cell>
+                            <flux:table.cell class="font-bold text-lg">{{ $i + 1 }}</flux:table.cell>
                             <flux:table.cell>{{ $member->username }}</flux:table.cell>
-                            <flux:cell class="font-bold">{{ $member->total_points ?? 0 }}</flux:table.cell>
+                            <flux:table.cell class="font-bold">{{ $member->total_points ?? 0 }}</flux:table.cell>
                             <flux:table.cell>R$ {{ number_format($member->total_bet ?? 0, 2, ',', '.') }}</flux:table.cell>
                         </flux:table.row>
                     @endforeach
