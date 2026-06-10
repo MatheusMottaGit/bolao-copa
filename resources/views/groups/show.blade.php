@@ -79,6 +79,8 @@
             @endif
         </form>
 
+        <hr class="border-zinc-800" />
+
         {{-- Jogos agrupados por data --}}
         @forelse ($games as $date => $dayGames)
             <details open class="group/details">
