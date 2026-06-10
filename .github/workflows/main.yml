@@ -53,7 +53,9 @@ jobs:
         run: ssh-add -l
 
       - name: Add VPS to known hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -T 30 -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Copy docker-compose.yml to VPS
         run: scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/docker/bolao_copa/docker-compose.yml
