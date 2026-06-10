@@ -26,9 +26,18 @@ class PredictionController extends Controller
                 'numeric',
                 'min:' . $minBet,
             ],
+        ], [
+            'home_score.required' => 'Informe o placar do time da casa.',
+            'home_score.integer'  => 'O placar deve ser um número inteiro.',
+            'home_score.min'      => 'O placar não pode ser negativo.',
+            'away_score.required' => 'Informe o placar do time visitante.',
+            'away_score.integer'  => 'O placar deve ser um número inteiro.',
+            'away_score.min'      => 'O placar não pode ser negativo.',
+            'bet_amount.numeric'  => 'O valor da aposta deve ser um número válido.',
+            'bet_amount.min'      => 'A aposta mínima é R$ ' . number_format($minBet, 2, ',', '.') . '.',
         ]);
 
-        $prediction = Prediction::updateOrCreate(
+        Prediction::updateOrCreate(
             ['user_id' => Auth::id(), 'game_id' => $game->id, 'group_id' => $group->id],
             [
                 'home_score' => $request->home_score,

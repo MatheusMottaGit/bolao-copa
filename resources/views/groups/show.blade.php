@@ -20,7 +20,7 @@
                     @endif
                 </div>
             </div>
-            <div class="flex shrink-0 items-center gap-2 sm:mt-1">
+            <div class="flex shrink-0 flex-col gap-2 sm:mt-1 sm:flex-row sm:items-center">
                 <a href="{{ route('groups.participants', $group) }}"
                     class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-slate-300 transition hover:border-zinc-500 hover:text-white sm:flex-none sm:px-4">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0">
@@ -88,7 +88,7 @@
                             <path d="m9 18 6-6-6-6"></path>
                         </svg>
                         <span class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-300">
-                            {{ \Carbon\Carbon::parse($date)->locale('pt_BR')->translatedFormat('l, d \d\e F') }}
+                            {{ str_replace('-feira', '', \Carbon\Carbon::parse($date)->locale('pt_BR')->translatedFormat('l, d \d\e F')) }}
                         </span>
                     </div>
                     <span class="rounded-full bg-zinc-800 px-2 py-0.5 text-xs font-semibold text-slate-400">
