@@ -16,15 +16,27 @@
                     <span class="rounded bg-[#C9920A]/10 px-2 py-0.5 font-mono text-sm font-bold text-[#C9920A]">{{ $group->code }}</span>
                 </div>
             </div>
-            <a href="{{ route('ranking.show', $group) }}"
-                class="inline-flex shrink-0 items-center gap-2 rounded-lg border border-[#C9920A] px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#C9920A] transition hover:bg-[#C9920A]/10">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
-                    <line x1="18" y1="20" x2="18" y2="10"></line>
-                    <line x1="12" y1="20" x2="12" y2="4"></line>
-                    <line x1="6" y1="20" x2="6" y2="14"></line>
-                </svg>
-                Ranking
-            </a>
+            <div class="flex shrink-0 items-center gap-2">
+                <a href="{{ route('groups.participants', $group) }}"
+                    class="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-slate-300 transition hover:border-zinc-500 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Participantes
+                </a>
+                <a href="{{ route('ranking.show', $group) }}"
+                    class="inline-flex items-center gap-2 rounded-lg border border-[#C9920A] px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#C9920A] transition hover:bg-[#C9920A]/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    Ranking
+                </a>
+            </div>
         </div>
 
         @if (session('success'))
@@ -137,12 +149,12 @@
                                     <p class="mb-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Palpite</p>
                                     <div class="flex items-center gap-2">
                                         <input type="number" name="home_score" min="0" max="99"
-                                            value="{{ $prediction?->home_score ?? old('home_score') }}"
+                                            value="{{ $prediction?->home_score }}"
                                             placeholder="0"
                                             class="w-full rounded-lg border border-zinc-700 bg-slate-950 px-3 py-2 text-center text-sm text-white outline-none transition focus:border-[#C9920A] focus:ring-2 focus:ring-[#C9920A]/15 sm:w-16" />
                                         <span class="shrink-0 font-bold text-slate-500">×</span>
                                         <input type="number" name="away_score" min="0" max="99"
-                                            value="{{ $prediction?->away_score ?? old('away_score') }}"
+                                            value="{{ $prediction?->away_score }}"
                                             placeholder="0"
                                             class="w-full rounded-lg border border-zinc-700 bg-slate-950 px-3 py-2 text-center text-sm text-white outline-none transition focus:border-[#C9920A] focus:ring-2 focus:ring-[#C9920A]/15 sm:w-16" />
                                     </div>
@@ -150,7 +162,7 @@
                                 <div class="w-full sm:w-auto">
                                     <p class="mb-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aposta</p>
                                     <input type="number" name="bet_amount" min="{{ $group->current_min_bet }}" step="0.01"
-                                        value="{{ $prediction?->bet_amount ?? old('bet_amount') }}"
+                                        value="{{ $prediction?->bet_amount }}"
                                         placeholder="R$ 0,00"
                                         class="w-full rounded-lg border border-zinc-700 bg-slate-950 px-3 py-2 text-sm text-white outline-none transition focus:border-[#C9920A] focus:ring-2 focus:ring-[#C9920A]/15 sm:w-36" />
                                 </div>

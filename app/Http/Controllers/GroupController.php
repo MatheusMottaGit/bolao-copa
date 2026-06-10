@@ -59,6 +59,18 @@ class GroupController extends Controller
         return view('groups.show', compact('group', 'games', 'userPredictions', 'ranking', 'search'));
     }
 
+    public function participants(Group $group): View
+    {
+        abort_unless(
+            $group->users()->where('user_id', Auth::id())->exists() || Auth::user()->is_admin,
+            403
+        );
+
+        $members = $group->users()->orderBy('username')->get();
+
+        return view('groups.participants', compact('group', 'members'));
+    }
+
     public function join(Request $request): RedirectResponse
     {
         $request->validate([

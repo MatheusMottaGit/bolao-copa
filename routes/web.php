@@ -24,6 +24,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/groups/{group}/games/{game}/predictions', [PredictionController::class, 'store'])
         ->name('predictions.store');
 
+    // Participantes
+    Route::get('/groups/{group}/participants', [GroupController::class, 'participants'])->name('groups.participants');
+
     // Ranking
     Route::get('/groups/{group}/ranking', [RankingController::class, 'show'])->name('ranking.show');
 });
