@@ -56,7 +56,14 @@ class GroupController extends Controller
 
         $ranking = $this->buildRanking($group);
 
-        return view('groups.show', compact('group', 'games', 'userPredictions', 'ranking', 'search'));
+        $members = $group->users()->orderBy('username')->get();
+
+        $allPredictions = \App\Models\Prediction::where('group_id', $group->id)
+            ->get()
+            ->groupBy('game_id')
+            ->map(fn ($predictions) => $predictions->keyBy('user_id'));
+
+        return view('groups.show', compact('group', 'games', 'userPredictions', 'allPredictions', 'members', 'ranking', 'search'));
     }
 
     public function participants(Group $group): View
