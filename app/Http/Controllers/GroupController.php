@@ -60,8 +60,8 @@ class GroupController extends Controller
 
         $allPredictions = \App\Models\Prediction::where('group_id', $group->id)
             ->get()
-            ->groupBy('game_id')
-            ->map(fn ($predictions) => $predictions->keyBy('user_id'));
+            ->groupBy(fn ($p) => (int) $p->game_id)
+            ->map(fn ($predictions) => $predictions->keyBy(fn ($p) => (int) $p->user_id));
 
         return view('groups.show', compact('group', 'games', 'userPredictions', 'allPredictions', 'members', 'ranking', 'search'));
     }

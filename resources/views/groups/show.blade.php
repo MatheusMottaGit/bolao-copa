@@ -11,12 +11,14 @@
                     Meus Bolões
                 </a>
                 <flux:heading size="xl">{{ $group->name }}</flux:heading>
-                @if (auth()->user()->is_admin)
-                    <div class="mt-2 flex items-center gap-2">
+                <div class="mt-2 flex items-center gap-2">
+                    @if (auth()->user()->is_admin)
                         <span class="text-base text-slate-500">Código:</span>
                         <span class="rounded bg-[#C9920A]/10 px-2 py-0.5 font-mono text-sm font-bold text-[#C9920A]">{{ $group->code }}</span>
-                    </div>
-                @endif
+                    @else
+                        <span class="invisible text-base">‌</span>
+                    @endif
+                </div>
             </div>
             <div class="flex shrink-0 items-center gap-2 sm:mt-1">
                 <a href="{{ route('groups.participants', $group) }}"
@@ -46,6 +48,11 @@
         @endif
         @if (session('error'))
             <flux:callout variant="danger" icon="x-circle">{{ session('error') }}</flux:callout>
+        @endif
+        @if ($errors->any())
+            <flux:callout variant="danger" icon="x-circle">
+                {{ $errors->first() }}
+            </flux:callout>
         @endif
 
         {{-- Busca --}}
@@ -92,8 +99,8 @@
                 <div class="mt-3 flex flex-col gap-4">
                 @foreach ($dayGames as $game)
                 @php
-                    $prediction = $userPredictions->get($game->id);
-                    $gamePredictions = $allPredictions->get($game->id, collect());
+                    $prediction = $userPredictions->get((int) $game->id);
+                    $gamePredictions = $allPredictions->get((int) $game->id, collect());
                 @endphp
                 <div class="rounded-xl border border-zinc-800 bg-slate-900 overflow-hidden">
 
@@ -232,7 +239,7 @@
                             </summary>
                             <div class="divide-y divide-zinc-800/60">
                                 @foreach ($members as $member)
-                                    @php $memberPred = $gamePredictions[$member->id] ?? null; @endphp
+                                    @php $memberPred = $gamePredictions->get((int) $member->id); @endphp
                                     <div class="flex items-center gap-3 px-4 py-2.5 sm:px-5">
                                         <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#C9920A]/10 text-xs font-bold text-[#C9920A]">
                                             {{ strtoupper(substr($member->username, 0, 1)) }}
