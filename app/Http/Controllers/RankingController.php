@@ -14,7 +14,9 @@ class RankingController extends Controller
 
         $ranking = $group->users()
             ->withSum(['predictions as total_points' => fn ($q) => $q->where('group_id', $group->id)], 'points')
+            ->withCount(['predictions as exact_count' => fn ($q) => $q->where('group_id', $group->id)->where('points', 3)])
             ->orderByDesc('total_points')
+            ->orderByDesc('exact_count')
             ->get();
 
         return view('ranking.show', compact('group', 'ranking'));

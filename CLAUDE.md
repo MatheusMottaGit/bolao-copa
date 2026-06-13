@@ -49,7 +49,7 @@ php artisan test --filter TestName
 
 ### Betting model
 - One bet **per participant per competition** (not per match), fixed at R$ 10 (`Group::BUY_IN`). When a user joins, the buy-in is snapshotted onto the `group_user.bet_amount` pivot and locked.
-- At competition end, the highest-points participant **takes the whole pot** (sum of all `bet_amount` via `Group::pot()`).
+- At competition end, the highest-points participant **takes the whole pot** (sum of all `bet_amount` via `Group::pot()`). Ties are broken by the number of exact-score predictions (`points = 3`); rankings order by `total_points` then `exact_count`.
 - Per-game predictions still exist — they are how points are earned, the betting just isn't per-match anymore.
 
 ### Scoring logic (in `SyncGames` command)
