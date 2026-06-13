@@ -53,7 +53,19 @@ jobs:
         run: ssh-add -l
 
       - name: Add VPS to known hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          n=0
+          until ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts; do
+            n=$((n+1))
+            if [ "$n" -ge 3 ]; then
+              echo "ssh-keyscan falhou após 3 tentativas"
+              exit 1
+            fi
+            echo "Tentativa $n falhou, repetindo em 5s..."
+            sleep 5
+          done
 
       - name: Copy docker-compose.yml to VPS
         run: scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/docker/bolao_copa/docker-compose.yml
