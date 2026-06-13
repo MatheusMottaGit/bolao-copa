@@ -11,6 +11,7 @@ class RankingController extends Controller
     public function show(Group $group): View
     {
         abort_unless($group->users()->where('user_id', Auth::id())->exists(), 403);
+        abort_unless(Auth::user()->is_admin, 403);
 
         $ranking = $group->users()
             ->withSum(['predictions as total_points' => fn ($q) => $q->where('group_id', $group->id)], 'points')

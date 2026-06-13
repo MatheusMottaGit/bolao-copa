@@ -31,6 +31,7 @@
                     </svg>
                     Participantes
                 </a>
+                @if (auth()->user()->is_admin)
                 <a href="{{ route('ranking.show', $group) }}"
                     class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#C9920A] px-3 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#C9920A] transition hover:bg-[#C9920A]/10 sm:flex-none sm:px-4">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0">
@@ -40,6 +41,7 @@
                     </svg>
                     Ranking
                 </a>
+                @endif
             </div>
         </div>
 
@@ -55,25 +57,27 @@
             </flux:callout>
         @endif
 
-        {{-- Resumo do bolo --}}
-        @php
-            $pot = $group->pot();
-            $myBet = optional($members->firstWhere('id', auth()->id()))->pivot->bet_amount ?? 0;
-        @endphp
-        <div class="grid grid-cols-3 gap-3">
-            <div class="rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Bolo total</p>
-                <p class="mt-1 text-lg font-black text-[#C9920A]">R$ {{ number_format($pot, 2, ',', '.') }}</p>
+        {{-- Resumo do bolo (apenas admin) --}}
+        @if (auth()->user()->is_admin)
+            @php
+                $pot = $group->pot();
+                $myBet = optional($members->firstWhere('id', auth()->id()))->pivot->bet_amount ?? 0;
+            @endphp
+            <div class="grid grid-cols-3 gap-3">
+                <div class="rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Bolo total</p>
+                    <p class="mt-1 text-lg font-black text-[#C9920A]">R$ {{ number_format($pot, 2, ',', '.') }}</p>
+                </div>
+                <div class="rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sua aposta</p>
+                    <p class="mt-1 text-lg font-black text-white">R$ {{ number_format($myBet, 2, ',', '.') }}</p>
+                </div>
+                <div class="rounded-xl border border-green-500/30 bg-green-500/5 px-4 py-3">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Prêmio (1º lugar)</p>
+                    <p class="mt-1 text-lg font-black text-green-400">R$ {{ number_format($pot, 2, ',', '.') }}</p>
+                </div>
             </div>
-            <div class="rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sua aposta</p>
-                <p class="mt-1 text-lg font-black text-white">R$ {{ number_format($myBet, 2, ',', '.') }}</p>
-            </div>
-            <div class="rounded-xl border border-green-500/30 bg-green-500/5 px-4 py-3">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Prêmio (1º lugar)</p>
-                <p class="mt-1 text-lg font-black text-green-400">R$ {{ number_format($pot, 2, ',', '.') }}</p>
-            </div>
-        </div>
+        @endif
 
         {{-- Busca --}}
         <form method="GET" action="{{ route('groups.show', $group) }}" class="flex items-center gap-2">
@@ -282,8 +286,8 @@
             </flux:callout>
         @endforelse
 
-        {{-- Ranking resumido --}}
-        @if ($ranking->isNotEmpty())
+        {{-- Ranking resumido (apenas admin) --}}
+        @if (auth()->user()->is_admin && $ranking->isNotEmpty())
             <div class="rounded-xl border border-zinc-800 bg-slate-900 overflow-hidden">
                 <div class="flex items-center justify-between border-b border-zinc-800 px-5 py-3">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Ranking</p>
