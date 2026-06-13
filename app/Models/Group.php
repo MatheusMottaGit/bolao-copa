@@ -12,8 +12,8 @@ class Group extends Model
 {
     protected $fillable = ['name', 'code', 'owner_id', 'buy_in'];
 
-    /** Fração do bolo destinada a cada posição do pódio (1º, 2º, 3º). */
-    public const PRIZE_SPLIT = [0.70, 0.20, 0.10];
+    /** Valor fixo da aposta de cada participante (em reais). */
+    public const BUY_IN = 10;
 
     protected function casts(): array
     {
@@ -50,17 +50,9 @@ class Group extends Model
         return $this->hasMany(Prediction::class);
     }
 
-    /** Soma de todas as apostas registradas (o bolo total). */
+    /** Soma de todas as apostas registradas (o bolo total). O 1º lugar leva tudo. */
     public function pot(): float
     {
         return (float) $this->users()->sum('bet_amount');
-    }
-
-    /** Valor do prêmio para cada posição do pódio, a partir do bolo total. */
-    public function prizes(): array
-    {
-        $pot = $this->pot();
-
-        return array_map(fn ($fraction) => round($pot * $fraction, 2), self::PRIZE_SPLIT);
     }
 }

@@ -58,10 +58,9 @@
         {{-- Resumo do bolo --}}
         @php
             $pot = $group->pot();
-            $prizes = $group->prizes();
             $myBet = optional($members->firstWhere('id', auth()->id()))->pivot->bet_amount ?? 0;
         @endphp
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="grid grid-cols-3 gap-3">
             <div class="rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Bolo total</p>
                 <p class="mt-1 text-lg font-black text-[#C9920A]">R$ {{ number_format($pot, 2, ',', '.') }}</p>
@@ -70,15 +69,9 @@
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sua aposta</p>
                 <p class="mt-1 text-lg font-black text-white">R$ {{ number_format($myBet, 2, ',', '.') }}</p>
             </div>
-            <div class="col-span-2 rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Premiação (1º / 2º / 3º)</p>
-                <p class="mt-1 text-sm font-bold text-white">
-                    <span class="text-green-400">R$ {{ number_format($prizes[0], 2, ',', '.') }}</span>
-                    <span class="text-slate-600"> · </span>
-                    R$ {{ number_format($prizes[1], 2, ',', '.') }}
-                    <span class="text-slate-600"> · </span>
-                    R$ {{ number_format($prizes[2], 2, ',', '.') }}
-                </p>
+            <div class="rounded-xl border border-green-500/30 bg-green-500/5 px-4 py-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Prêmio (1º lugar)</p>
+                <p class="mt-1 text-lg font-black text-green-400">R$ {{ number_format($pot, 2, ',', '.') }}</p>
             </div>
         </div>
 
@@ -291,7 +284,6 @@
 
         {{-- Ranking resumido --}}
         @if ($ranking->isNotEmpty())
-            @php $prizes = $group->prizes(); @endphp
             <div class="rounded-xl border border-zinc-800 bg-slate-900 overflow-hidden">
                 <div class="flex items-center justify-between border-b border-zinc-800 px-5 py-3">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Ranking</p>
@@ -310,8 +302,8 @@
                             <span class="flex-1 text-sm font-semibold {{ $i === 0 ? 'text-[#C9920A]' : 'text-white' }}">
                                 {{ $member->username }}
                             </span>
-                            @if ($isTop && ($prizes[$i] ?? 0) > 0)
-                                <span class="text-xs font-semibold text-green-400">R$ {{ number_format($prizes[$i], 2, ',', '.') }}</span>
+                            @if ($i === 0 && $pot > 0)
+                                <span class="text-xs font-semibold text-green-400">R$ {{ number_format($pot, 2, ',', '.') }}</span>
                             @endif
                             <span class="min-w-12 text-right text-sm font-bold {{ $i === 0 ? 'text-[#C9920A]' : 'text-white' }}">
                                 {{ $member->total_points ?? 0 }} <span class="text-xs font-normal text-slate-500">pts</span>

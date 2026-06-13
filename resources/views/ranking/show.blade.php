@@ -5,7 +5,7 @@
             <flux:link :href="route('groups.show', $group)">Voltar aos jogos</flux:link>
         </div>
 
-        @php $prizes = $group->prizes(); @endphp
+        @php $pot = $group->pot(); @endphp
 
         <flux:card>
             <flux:table>
@@ -22,8 +22,8 @@
                             <flux:table.cell>{{ $member->username }}</flux:table.cell>
                             <flux:table.cell class="font-bold">{{ $member->total_points ?? 0 }}</flux:table.cell>
                             <flux:table.cell>
-                                @if ($i < 3 && ($prizes[$i] ?? 0) > 0)
-                                    <span class="font-semibold text-green-500">R$ {{ number_format($prizes[$i], 2, ',', '.') }}</span>
+                                @if ($i === 0 && $pot > 0)
+                                    <span class="font-semibold text-green-500">R$ {{ number_format($pot, 2, ',', '.') }}</span>
                                 @else
                                     <span class="text-zinc-500">—</span>
                                 @endif
@@ -35,7 +35,7 @@
         </flux:card>
 
         <flux:text size="sm" class="text-zinc-500">
-            Bolo total: R$ {{ number_format($group->pot(), 2, ',', '.') }} · Buy-in: R$ {{ number_format($group->buy_in, 2, ',', '.') }} · Premiação 70% / 20% / 10%
+            Bolo total: R$ {{ number_format($pot, 2, ',', '.') }} · Aposta por participante: R$ {{ number_format($group->buy_in, 2, ',', '.') }} · O 1º lugar leva tudo
         </flux:text>
     </div>
 </x-layouts::app>

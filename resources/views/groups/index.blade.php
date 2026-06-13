@@ -139,14 +139,7 @@
                 <input name="name" value="{{ old('name') }}" type="text" required placeholder="Nome do bolão"
                     class="w-full rounded-lg border border-zinc-700 bg-slate-950 px-5 py-4 text-lg text-white outline-none transition focus:border-[#C9920A] focus:ring-2 focus:ring-[#C9920A]/15" />
                 @error('name') <flux:error>{{ $message }}</flux:error> @enderror
-
-                <div class="flex items-center rounded-lg border border-zinc-700 bg-slate-950 transition focus-within:border-[#C9920A] focus-within:ring-2 focus-within:ring-[#C9920A]/15">
-                    <span class="select-none pl-5 text-lg font-semibold text-slate-400">R$</span>
-                    <input name="buy_in" value="{{ old('buy_in') }}" type="number" min="0" step="0.01" required placeholder="Valor da entrada (buy-in)"
-                        class="w-full bg-transparent px-3 py-4 text-lg text-white placeholder-slate-500 outline-none" />
-                </div>
-                <p class="text-xs text-slate-500">Todos os participantes apostam esse valor. No fim, o bolo é dividido entre o top 3 (70% / 20% / 10%).</p>
-                @error('buy_in') <flux:error>{{ $message }}</flux:error> @enderror
+                <p class="text-xs text-slate-500">Cada participante aposta R$ {{ number_format(\App\Models\Group::BUY_IN, 2, ',', '.') }}. No fim da Copa, quem tiver mais pontos leva todo o bolo.</p>
 
                 <button
                     type="submit"
@@ -217,7 +210,7 @@
     </div>
 
     {{-- Re-abre o modal correto se houver erro de validação --}}
-    @if (($errors->has('name') || $errors->has('buy_in')) && auth()->user()->is_admin)
+    @if ($errors->has('name') && auth()->user()->is_admin)
         <script>window.dispatchEvent(new CustomEvent('open-create-modal'))</script>
     @endif
     @if ($errors->has('code'))
