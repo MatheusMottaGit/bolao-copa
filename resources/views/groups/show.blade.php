@@ -55,6 +55,33 @@
             </flux:callout>
         @endif
 
+        {{-- Resumo do bolo --}}
+        @php
+            $pot = $group->pot();
+            $prizes = $group->prizes();
+            $myBet = optional($members->firstWhere('id', auth()->id()))->pivot->bet_amount ?? 0;
+        @endphp
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Bolo total</p>
+                <p class="mt-1 text-lg font-black text-[#C9920A]">R$ {{ number_format($pot, 2, ',', '.') }}</p>
+            </div>
+            <div class="rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sua aposta</p>
+                <p class="mt-1 text-lg font-black text-white">R$ {{ number_format($myBet, 2, ',', '.') }}</p>
+            </div>
+            <div class="col-span-2 rounded-xl border border-zinc-800 bg-slate-900 px-4 py-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Premiação (1º / 2º / 3º)</p>
+                <p class="mt-1 text-sm font-bold text-white">
+                    <span class="text-green-400">R$ {{ number_format($prizes[0], 2, ',', '.') }}</span>
+                    <span class="text-slate-600"> · </span>
+                    R$ {{ number_format($prizes[1], 2, ',', '.') }}
+                    <span class="text-slate-600"> · </span>
+                    R$ {{ number_format($prizes[2], 2, ',', '.') }}
+                </p>
+            </div>
+        </div>
+
         {{-- Busca --}}
         <form method="GET" action="{{ route('groups.show', $group) }}" class="flex items-center gap-2">
             <div class="relative flex-1">
@@ -184,16 +211,6 @@
                                                 class="w-full rounded-lg border border-zinc-700 bg-slate-950 px-3 py-2 text-center text-sm text-white outline-none transition focus:border-[#C9920A] focus:ring-2 focus:ring-[#C9920A]/15 sm:w-16" />
                                         </div>
                                     </div>
-                                    <div class="w-full sm:w-auto">
-                                        <p class="mb-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Aposta</p>
-                                        <div class="flex items-center rounded-lg border border-zinc-700 bg-slate-950 transition focus-within:border-[#C9920A] focus-within:ring-2 focus-within:ring-[#C9920A]/15 sm:w-36">
-                                            <span class="select-none pl-3 text-sm font-semibold text-slate-400">R$</span>
-                                            <input type="number" name="bet_amount" min="{{ $group->current_min_bet }}" step="0.01"
-                                                value="{{ $prediction?->bet_amount }}"
-                                                placeholder="0,00"
-                                                class="w-full bg-transparent py-2 pl-1.5 pr-3 text-sm text-white outline-none" />
-                                        </div>
-                                    </div>
                                     <button type="submit"
                                         class="{{ $prediction ? 'border border-[#C9920A] bg-transparent text-[#C9920A] hover:bg-[#C9920A]/10' : 'bg-[#C9920A] text-white shadow-lg shadow-[#C9920A]/20 hover:bg-[#b47f0a]' }} inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] transition sm:ml-auto sm:w-auto">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
@@ -202,9 +219,6 @@
                                         {{ $prediction ? 'Atualizar palpite' : 'Salvar palpite' }}
                                     </button>
                                 </div>
-                                @if ($group->current_min_bet > 0)
-                                    <p class="mt-2 text-xs text-slate-600">Aposta mínima: R$ {{ number_format($group->current_min_bet, 2, ',', '.') }}</p>
-                                @endif
                             </form>
                         </div>
                     @elseif ($prediction)
@@ -216,9 +230,6 @@
                                         {{ $prediction->home_score }} × {{ $prediction->away_score }}
                                     </span>
                                 </div>
-                                @if ($prediction->bet_amount)
-                                    <span class="text-xs text-slate-500">Aposta: R$ {{ number_format($prediction->bet_amount, 2, ',', '.') }}</span>
-                                @endif
                                 @if ($game->status === 'finished')
                                     <span class="ml-auto rounded-lg px-3 py-1 text-sm font-bold {{ $prediction->points > 0 ? 'bg-green-500/10 text-green-400' : 'bg-zinc-800 text-slate-500' }}">
                                         {{ $prediction->points }} {{ $prediction->points === 1 ? 'ponto' : 'pontos' }}
@@ -256,9 +267,6 @@
                                             <span class="rounded bg-zinc-800 px-2 py-0.5 font-mono text-xs font-bold text-white">
                                                 {{ $memberPred->home_score }} × {{ $memberPred->away_score }}
                                             </span>
-                                            @if ($memberPred->bet_amount)
-                                                <span class="hidden text-xs text-slate-500 sm:inline">R$ {{ number_format($memberPred->bet_amount, 2, ',', '.') }}</span>
-                                            @endif
                                             @if ($game->status === 'finished')
                                                 <span class="shrink-0 text-xs font-bold {{ $memberPred->points > 0 ? 'text-green-400' : 'text-slate-600' }}">
                                                     {{ $memberPred->points }} pts
@@ -283,6 +291,7 @@
 
         {{-- Ranking resumido --}}
         @if ($ranking->isNotEmpty())
+            @php $prizes = $group->prizes(); @endphp
             <div class="rounded-xl border border-zinc-800 bg-slate-900 overflow-hidden">
                 <div class="flex items-center justify-between border-b border-zinc-800 px-5 py-3">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Ranking</p>
@@ -301,7 +310,9 @@
                             <span class="flex-1 text-sm font-semibold {{ $i === 0 ? 'text-[#C9920A]' : 'text-white' }}">
                                 {{ $member->username }}
                             </span>
-                            <span class="text-xs text-slate-500">R$ {{ number_format($member->total_bet ?? 0, 2, ',', '.') }}</span>
+                            @if ($isTop && ($prizes[$i] ?? 0) > 0)
+                                <span class="text-xs font-semibold text-green-400">R$ {{ number_format($prizes[$i], 2, ',', '.') }}</span>
+                            @endif
                             <span class="min-w-12 text-right text-sm font-bold {{ $i === 0 ? 'text-[#C9920A]' : 'text-white' }}">
                                 {{ $member->total_points ?? 0 }} <span class="text-xs font-normal text-slate-500">pts</span>
                             </span>

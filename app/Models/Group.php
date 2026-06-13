@@ -10,7 +10,17 @@ use Illuminate\Support\Str;
 
 class Group extends Model
 {
-    protected $fillable = ['name', 'code', 'owner_id', 'current_min_bet'];
+    protected $fillable = ['name', 'code', 'owner_id', 'buy_in'];
+
+    /** Fração do bolo destinada a cada posição do pódio (1º, 2º, 3º). */
+    public const PRIZE_SPLIT = [0.70, 0.20, 0.10];
+
+    protected function casts(): array
+    {
+        return [
+            'buy_in' => 'decimal:2',
+        ];
+    }
 
     protected static function booted(): void
     {
@@ -32,11 +42,25 @@ class Group extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot('bet_amount');
     }
 
     public function predictions(): HasMany
     {
         return $this->hasMany(Prediction::class);
+    }
+
+    /** Soma de todas as apostas registradas (o bolo total). */
+    public function pot(): float
+    {
+        return (float) $this->users()->sum('bet_amount');
+    }
+
+    /** Valor do prêmio para cada posição do pódio, a partir do bolo total. */
+    public function prizes(): array
+    {
+        $pot = $this->pot();
+
+        return array_map(fn ($fraction) => round($pot * $fraction, 2), self::PRIZE_SPLIT);
     }
 }

@@ -21,14 +21,21 @@ class GroupController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:100'],
+            'buy_in' => ['required', 'numeric', 'min:0'],
+        ], [
+            'name.required'   => 'Informe o nome do bolão.',
+            'buy_in.required' => 'Informe o valor da entrada (buy-in).',
+            'buy_in.numeric'  => 'O buy-in deve ser um número válido.',
+            'buy_in.min'      => 'O buy-in não pode ser negativo.',
         ]);
 
         $group = Group::create([
             'name' => $request->name,
             'owner_id' => Auth::id(),
+            'buy_in' => $request->buy_in,
         ]);
 
-        $group->users()->attach(Auth::id());
+        $group->users()->attach(Auth::id(), ['bet_amount' => $group->buy_in]);
 
         return redirect()->route('groups.show', $group)->with('success', 'Bolão criado com sucesso!');
     }
@@ -90,7 +97,7 @@ class GroupController extends Controller
             return back()->with('error', 'Você já está neste bolão.');
         }
 
-        $group->users()->attach(Auth::id());
+        $group->users()->attach(Auth::id(), ['bet_amount' => $group->buy_in]);
 
         return redirect()->route('groups.show', $group)->with('success', 'Você entrou no bolão!');
     }
@@ -99,7 +106,6 @@ class GroupController extends Controller
     {
         return $group->users()
             ->withSum(['predictions as total_points' => fn ($q) => $q->where('group_id', $group->id)], 'points')
-            ->withSum(['predictions as total_bet' => fn ($q) => $q->where('group_id', $group->id)], 'bet_amount')
             ->orderByDesc('total_points')
             ->get();
     }

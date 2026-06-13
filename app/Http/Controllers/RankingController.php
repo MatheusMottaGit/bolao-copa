@@ -14,7 +14,6 @@ class RankingController extends Controller
 
         $ranking = $group->users()
             ->withSum(['predictions as total_points' => fn ($q) => $q->where('group_id', $group->id)], 'points')
-            ->withSum(['predictions as total_bet' => fn ($q) => $q->where('group_id', $group->id)], 'bet_amount')
             ->orderByDesc('total_points')
             ->get();
 

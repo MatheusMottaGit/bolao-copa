@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Prediction extends Model
 {
-    protected $fillable = ['user_id', 'game_id', 'group_id', 'home_score', 'away_score', 'bet_amount', 'points'];
+    protected $fillable = ['user_id', 'game_id', 'group_id', 'home_score', 'away_score', 'points'];
 
     protected function casts(): array
     {
         return [
             'home_score' => 'integer',
             'away_score' => 'integer',
-            'bet_amount' => 'decimal:2',
             'points' => 'integer',
         ];
     }

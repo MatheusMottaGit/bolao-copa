@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     public function groups(): BelongsToMany
     {
-        return $this->belongsToMany(Group::class);
+        return $this->belongsToMany(Group::class)->withPivot('bet_amount');
     }
 
     public function predictions(): HasMany

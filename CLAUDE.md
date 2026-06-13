@@ -42,10 +42,15 @@ php artisan test --filter TestName
 - Admin check via `is_admin` boolean on `users` table; `app/Http/Middleware/IsAdmin.php` protects `/admin/*`.
 
 ### Key Models
-- **User** — `username`, `password`, `is_admin`; `belongsToMany(Group)`, `hasMany(Prediction)`
-- **Group** — `name`, `code` (auto-generated 6-char uppercase), `owner_id`, `current_min_bet`; auto-generates code in `booted()`
+- **User** — `username`, `password`, `is_admin`; `belongsToMany(Group)` (with `bet_amount` pivot), `hasMany(Prediction)`
+- **Group** — `name`, `code` (auto-generated 6-char uppercase), `owner_id`, `buy_in`; auto-generates code in `booted()`. `pot()` sums all participants' bets; `prizes()` splits the pot per `PRIZE_SPLIT` (70/20/10)
 - **Game** — `api_id`, `home_team`, `away_team`, `starts_at`, `home_score`, `away_score`, `status` (`scheduled`/`in_progress`/`finished`)
-- **Prediction** — unique on `(user_id, game_id, group_id)`; `points` field updated by the sync command
+- **Prediction** — unique on `(user_id, game_id, group_id)`; `home_score`/`away_score`/`points` (no bet field). `points` updated by the sync command
+
+### Betting model
+- One bet **per participant per competition** (not per match). The group owner sets a fixed `buy_in`; when a user joins, that buy-in is snapshotted onto the `group_user.bet_amount` pivot and locked (the owner can later change `buy_in`, affecting only new joiners).
+- At competition end, the pot (sum of all `bet_amount`) is split among the top 3 by points: 70% / 20% / 10% (`Group::PRIZE_SPLIT`).
+- Per-game predictions still exist — they are how points are earned, the betting just isn't per-match anymore.
 
 ### Scoring logic (in `SyncGames` command)
 - Exact score → 3 points
