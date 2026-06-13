@@ -31,7 +31,6 @@
                     </svg>
                     Participantes
                 </a>
-                @if (auth()->user()->is_admin)
                 <a href="{{ route('ranking.show', $group) }}"
                     class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#C9920A] px-3 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#C9920A] transition hover:bg-[#C9920A]/10 sm:flex-none sm:px-4">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0">
@@ -41,7 +40,6 @@
                     </svg>
                     Ranking
                 </a>
-                @endif
             </div>
         </div>
 
@@ -286,8 +284,8 @@
             </flux:callout>
         @endforelse
 
-        {{-- Ranking resumido (apenas admin) --}}
-        @if (auth()->user()->is_admin && $ranking->isNotEmpty())
+        {{-- Ranking resumido --}}
+        @if ($ranking->isNotEmpty())
             <div class="rounded-xl border border-zinc-800 bg-slate-900 overflow-hidden">
                 <div class="flex items-center justify-between border-b border-zinc-800 px-5 py-3">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Ranking</p>
@@ -306,8 +304,8 @@
                             <span class="flex-1 text-sm font-semibold {{ $i === 0 ? 'text-[#C9920A]' : 'text-white' }}">
                                 {{ $member->username }}
                             </span>
-                            @if ($i === 0 && $pot > 0)
-                                <span class="text-xs font-semibold text-green-400">R$ {{ number_format($pot, 2, ',', '.') }}</span>
+                            @if (auth()->user()->is_admin && $i === 0 && $group->pot() > 0)
+                                <span class="text-xs font-semibold text-green-400">R$ {{ number_format($group->pot(), 2, ',', '.') }}</span>
                             @endif
                             <span class="min-w-12 text-right text-sm font-bold {{ $i === 0 ? 'text-[#C9920A]' : 'text-white' }}">
                                 {{ $member->total_points ?? 0 }} <span class="text-xs font-normal text-slate-500">pts</span>

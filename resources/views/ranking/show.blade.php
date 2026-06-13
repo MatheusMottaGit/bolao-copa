@@ -5,7 +5,10 @@
             <flux:link :href="route('groups.show', $group)">Voltar aos jogos</flux:link>
         </div>
 
-        @php $pot = $group->pot(); @endphp
+        @php
+            $isAdmin = auth()->user()->is_admin;
+            $pot = $group->pot();
+        @endphp
 
         <flux:card>
             <flux:table>
@@ -14,7 +17,9 @@
                     <flux:table.column>Usuário</flux:table.column>
                     <flux:table.column>Pontos</flux:table.column>
                     <flux:table.column>Exatos</flux:table.column>
-                    <flux:table.column>Prêmio</flux:table.column>
+                    @if ($isAdmin)
+                        <flux:table.column>Prêmio</flux:table.column>
+                    @endif
                 </flux:table.columns>
                 <flux:table.rows>
                     @foreach ($ranking as $i => $member)
@@ -23,13 +28,15 @@
                             <flux:table.cell>{{ $member->username }}</flux:table.cell>
                             <flux:table.cell class="font-bold">{{ $member->total_points ?? 0 }}</flux:table.cell>
                             <flux:table.cell>{{ $member->exact_count ?? 0 }}</flux:table.cell>
-                            <flux:table.cell>
-                                @if ($i === 0 && $pot > 0)
-                                    <span class="font-semibold text-green-500">R$ {{ number_format($pot, 2, ',', '.') }}</span>
-                                @else
-                                    <span class="text-zinc-500">—</span>
-                                @endif
-                            </flux:table.cell>
+                            @if ($isAdmin)
+                                <flux:table.cell>
+                                    @if ($i === 0 && $pot > 0)
+                                        <span class="font-semibold text-green-500">R$ {{ number_format($pot, 2, ',', '.') }}</span>
+                                    @else
+                                        <span class="text-zinc-500">—</span>
+                                    @endif
+                                </flux:table.cell>
+                            @endif
                         </flux:table.row>
                     @endforeach
                 </flux:table.rows>
@@ -37,7 +44,11 @@
         </flux:card>
 
         <flux:text size="sm" class="text-zinc-500">
-            Bolo total: R$ {{ number_format($pot, 2, ',', '.') }} · Aposta por participante: R$ {{ number_format($group->buy_in, 2, ',', '.') }} · O 1º lugar leva tudo · Empate é decidido por mais placares exatos
+            @if ($isAdmin)
+                Bolo total: R$ {{ number_format($pot, 2, ',', '.') }} · Aposta por participante: R$ {{ number_format($group->buy_in, 2, ',', '.') }} · O 1º lugar leva tudo · Empate é decidido por mais placares exatos
+            @else
+                O 1º lugar leva o bolão · Empate é decidido por mais placares exatos
+            @endif
         </flux:text>
     </div>
 </x-layouts::app>
