@@ -1,0 +1,66 @@
+<?php
+
+return [
+    'accepted' => 'O campo :attribute deve ser aceito.',
+    'active_url' => 'O campo :attribute não contém uma URL válida.',
+    'after' => 'O campo :attribute deve conter uma data posterior a :date.',
+    'after_or_equal' => 'O campo :attribute deve conter uma data superior ou igual a :date.',
+    'alpha' => 'O campo :attribute deve conter apenas letras.',
+    'alpha_dash' => 'O campo :attribute deve conter apenas letras, números, traços e sublinhados.',
+    'alpha_num' => 'O campo :attribute deve conter apenas letras e números.',
+    'array' => 'O campo :attribute deve conter uma lista.',
+    'before' => 'O campo :attribute deve conter uma data anterior a :date.',
+    'before_or_equal' => 'O campo :attribute deve conter uma data anterior ou igual a :date.',
+    'between' => [
+        'array' => 'O campo :attribute deve conter entre :min e :max itens.',
+        'file' => 'O campo :attribute deve ter entre :min e :max kilobytes.',
+        'numeric' => 'O campo :attribute deve estar entre :min e :max.',
+        'string' => 'O campo :attribute deve conter entre :min e :max caracteres.',
+    ],
+    'boolean' => 'O campo :attribute deve ser verdadeiro ou falso.',
+    'confirmed' => 'A confirmação de :attribute não confere.',
+    'date' => 'O campo :attribute não contém uma data válida.',
+    'date_equals' => 'O campo :attribute deve conter uma data igual a :date.',
+    'date_format' => 'O campo :attribute não corresponde ao formato :format.',
+    'different' => 'Os campos :attribute e :other devem ser diferentes.',
+    'digits' => 'O campo :attribute deve conter :digits dígitos.',
+    'digits_between' => 'O campo :attribute deve conter entre :min e :max dígitos.',
+    'email' => 'O campo :attribute deve conter um endereço de e-mail válido.',
+    'exists' => 'O :attribute selecionado é inválido.',
+    'in' => 'O :attribute selecionado é inválido.',
+    'integer' => 'O campo :attribute deve conter um número inteiro.',
+    'max' => [
+        'array' => 'O campo :attribute não pode conter mais de :max itens.',
+        'file' => 'O campo :attribute não pode ser maior que :max kilobytes.',
+        'numeric' => 'O campo :attribute não pode ser maior que :max.',
+        'string' => 'O campo :attribute não pode ter mais de :max caracteres.',
+    ],
+    'min' => [
+        'array' => 'O campo :attribute deve ter pelo menos :min itens.',
+        'file' => 'O campo :attribute deve ter no mínimo :min kilobytes.',
+        'numeric' => 'O campo :attribute deve ser no mínimo :min.',
+        'string' => 'O campo :attribute deve ter pelo menos :min caracteres.',
+    ],
+    'numeric' => 'O campo :attribute deve conter um número.',
+    'present' => 'O campo :attribute deve estar presente.',
+    'regex' => 'O campo :attribute tem um formato inválido.',
+    'required' => 'O campo :attribute é obrigatório.',
+    'required_if' => 'O campo :attribute é obrigatório quando :other é :value.',
+    'same' => 'Os campos :attribute e :other devem ser iguais.',
+    'string' => 'O campo :attribute deve conter um texto.',
+    'unique' => 'Este :attribute já está em uso.',
+
+    'custom' => [
+        'password' => [
+            'min' => 'A senha deve ter pelo menos :min caracteres.',
+        ],
+    ],
+
+    'attributes' => [
+        'username' => 'nome de usuário',
+        'password' => 'senha',
+        'password_confirmation' => 'confirmação de senha',
+        'home_score' => 'placar do time da casa',
+        'away_score' => 'placar do time visitante',
+    ],
+];

@@ -44,7 +44,27 @@
         </div>
 
         @if (session('success'))
-            <flux:callout variant="success" icon="check-circle">{{ session('success') }}</flux:callout>
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 7500)" x-show="show" x-cloak
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 translate-y-2"
+                class="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-green-500/30 bg-slate-900 px-4 py-3 shadow-2xl shadow-black/40">
+                <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-500/15 text-green-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </span>
+                <span class="text-sm font-semibold text-white">{{ session('success') }}</span>
+                <button type="button" @click="show = false" aria-label="Fechar" class="ml-2 text-slate-500 transition hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
         @endif
         @if (session('error'))
             <flux:callout variant="danger" icon="x-circle">{{ session('error') }}</flux:callout>
@@ -105,7 +125,8 @@
 
         {{-- Jogos agrupados por data --}}
         @forelse ($games as $date => $dayGames)
-            <details open class="group/details">
+            @php $isPastDay = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::today()); @endphp
+            <details @if (! $isPastDay) open @endif class="group/details">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-3 rounded-lg border border-zinc-800 bg-slate-900/50 px-4 py-3 select-none hover:bg-slate-900 transition">
                     <div class="flex items-center gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0 text-[#C9920A] transition-transform group-open/details:rotate-90">
@@ -126,7 +147,7 @@
                     $prediction = $userPredictions->get((int) $game->id);
                     $gamePredictions = $allPredictions->get((int) $game->id, collect());
                 @endphp
-                <div class="rounded-xl border border-zinc-800 bg-slate-900 overflow-hidden">
+                <div id="game-{{ $game->id }}" class="scroll-mt-24 rounded-xl border border-zinc-800 bg-slate-900 overflow-hidden">
 
                     {{-- Status bar --}}
                     <div class="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">

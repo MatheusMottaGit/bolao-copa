@@ -36,6 +36,8 @@ class PredictionController extends Controller
             ]
         );
 
-        return back()->with('success', 'Palpite salvo!');
+        return redirect()
+            ->to(url()->previous().'#game-'.$game->id)
+            ->with('success', 'Palpite salvo!');
     }
 }
