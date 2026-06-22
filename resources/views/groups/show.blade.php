@@ -152,7 +152,7 @@
                     {{-- Status bar --}}
                     <div class="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
                         <span class="text-xs text-slate-500 sm:text-sm">
-                            {{ $game->starts_at->format('d/m/Y · H:i') }}
+                            {{ $game->starts_at->timezone('America/Sao_Paulo')->format('d/m/Y · H:i') }}
                         </span>
                         @if ($game->status === 'finished')
                             <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 sm:text-sm">

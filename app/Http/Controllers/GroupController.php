@@ -50,7 +50,7 @@ class GroupController extends Controller
                   ->orWhere('away_team', 'like', "%{$search}%")
             ))
             ->get()
-            ->groupBy(fn ($game) => $game->starts_at->format('Y-m-d'));
+            ->groupBy(fn ($game) => $game->starts_at->timezone('America/Sao_Paulo')->format('Y-m-d'));
         $userPredictions = Auth::user()
             ->predictions()
             ->where('group_id', $group->id)
